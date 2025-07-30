@@ -1,8 +1,0 @@
-version: "3.8"
-
-services:
-  frontend:
-    build: .
-    container_name: career_progression_frontend
-    ports:
-      - "4200:4200"
