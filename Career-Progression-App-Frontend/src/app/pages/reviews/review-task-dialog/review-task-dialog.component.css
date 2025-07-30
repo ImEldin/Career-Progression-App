@@ -1,0 +1,124 @@
+.dialog-container {
+  padding: 24px;
+  max-width: 600px;
+}
+
+.task-details {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.task-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.task-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.meta-item mat-icon {
+  color: #666;
+}
+
+.meta-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.meta-value {
+  font-size: 14px;
+  color: #333;
+}
+
+.task-description {
+  background-color: #f5f5f5;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.task-description h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.task-description p {
+  margin: 0;
+  color: #666;
+  line-height: 1.5;
+}
+
+.review-form {
+  margin-top: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-actions {
+  margin-top: 24px;
+  padding: 0;
+}
+
+mat-dialog-actions button {
+  margin-left: 8px;
+}
+
+mat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+mat-chip mat-icon {
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+mat-dialog-actions button[color="warn"] {
+  background-color: #f44336 !important;
+  color: #fff !important;
+}
+mat-dialog-actions button[color="warn"]:hover {
+  background-color: #d32f2f !important;
+}
+
+@media (max-width: 600px) {
+  .dialog-container {
+    padding: 16px;
+  }
+
+  .task-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-meta {
+    gap: 12px;
+  }
+} 

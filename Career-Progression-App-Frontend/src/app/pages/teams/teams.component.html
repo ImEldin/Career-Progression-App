@@ -1,0 +1,168 @@
+<div class="teams-header">
+  <h2>Manage Teams</h2>
+  <button mat-flat-button color="secondary" (click)="openCreateTeamDialog()">
+    + Create
+  </button>
+</div>
+
+<hr class="teams-divider" />
+
+<div class="filter-container">
+  <input
+    type="text"
+    placeholder="Team Name"
+    [(ngModel)]="filters.teamName"
+    (input)="applyFilters()"
+    class="filter-input"
+  />
+
+  <input
+    type="text"
+    placeholder="User Name"
+    [(ngModel)]="filters.userName"
+    (input)="applyFilters()"
+    class="filter-input"
+  />
+
+  <input
+    type="text"
+    placeholder="Role"
+    [(ngModel)]="filters.role"
+    (input)="applyFilters()"
+    class="filter-input"
+  />
+
+  <input
+    type="text"
+    placeholder="Skill"
+    [(ngModel)]="filters.skill"
+    (input)="applyFilters()"
+    class="filter-input"
+  />
+
+  <input
+    type="text"
+    placeholder="Tag"
+    [(ngModel)]="filters.tag"
+    (input)="applyFilters()"
+    class="filter-input"
+  />
+</div>
+<div *ngIf="loadingTeams" class="hourglass-loading">
+  <mat-icon class="hourglass-icon">hourglass_empty</mat-icon>
+  <p>Loading teams...</p>
+</div>
+<div *ngIf="!loadingTeams">
+  <div *ngIf="filteredTeams.length === 0" class="no-results-container">
+    <mat-icon class="search_off" color="disabled">assignment_late</mat-icon>
+    <div class="no-results-text">
+      <h3>No teams found</h3>
+      <p>Try adjusting your filters or create a new team</p>
+    </div>
+  </div>
+</div>
+<mat-accordion *ngIf="!loadingTeams" class="team-accordion">
+  <mat-expansion-panel *ngFor="let team of filteredTeams" class="team-panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <strong>{{ team.name }}</strong>
+      </mat-panel-title>
+      <mat-panel-description>
+        <span class="lead-text">Team Lead: {{ team.leadName }}</span>
+      </mat-panel-description>
+      <mat-panel-description>
+        <span class="lead-text">Members: {{ team.members.length }}</span>
+      </mat-panel-description>
+      <mat-panel-description>
+        <span class="lead-text"
+          >Unique Skills: {{ team.uniqueSkillCount }}</span
+        >
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div
+      *ngIf="team.members.length > 0; else noMembers"
+      class="member-container"
+    >
+      <mat-card
+        *ngFor="let user of team.members"
+        class="member-card"
+        (click)="goToUserProfile(user.id)"
+      >
+        <div class="member-content">
+          <img
+            [src]="user.profilePictureUrl"
+            alt="{{ user.firstName }} {{ user.lastName }}"
+            class="member-avatar"
+            *ngIf="user.profilePictureUrl; else fallbackIcon"
+          />
+          <ng-template #fallbackIcon>
+            <div class="fallback-avatar">
+              {{ user.firstName.charAt(0) | uppercase }}
+            </div>
+          </ng-template>
+
+          <div class="member-info">
+            <div class="member-name">
+              {{ user.firstName }} {{ user.lastName }}
+            </div>
+            <div class="member-email">{{ user.email }}</div>
+            <div
+              class="member-role"
+              [ngClass]="{ 'team-lead-chip': user.id === team.leadId }"
+            >
+              {{ user.id === team.leadId ? "Team Lead" : user.roleName }}
+            </div>
+          </div>
+        </div>
+      </mat-card>
+      <div class="team-skill-line">
+        <ng-container
+          *ngIf="getUniqueSkillObjects(team).length > 0; else noSkills"
+        >
+          <span
+            *ngFor="let skill of getUniqueSkillObjects(team)"
+            class="skill-chip"
+            [matTooltip]="getSkillTooltip(skill)"
+            matTooltipClass="multi-line-tooltip"
+          >
+            {{ skill.name }}
+          </span>
+        </ng-container>
+        <div
+          style="
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+          "
+        >
+          <button
+            mat-icon-button
+            (click)="openEditTeamDialog(team.id)"
+            matTooltip="Edit Team"
+            aria-label="Edit Team"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="deleteTeam(team.id)"
+            matTooltip="Delete Team"
+            aria-label="Delete Team"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <ng-template #noSkills>
+          <span class="no-skills-text">No unique skills found.</span>
+        </ng-template>
+      </div>
+    </div>
+
+    <ng-template #noMembers>
+      <div class="no-members-text">No members in this team.</div>
+    </ng-template>
+  </mat-expansion-panel>
+</mat-accordion>

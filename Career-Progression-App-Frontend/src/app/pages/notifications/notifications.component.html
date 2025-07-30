@@ -1,0 +1,73 @@
+<div class="notifications-container">
+  <div class="header">
+    <h2>Notifications</h2>
+  </div>
+
+  <div class="filters-container">
+    <button
+      *ngFor="let filter of filterCounts"
+      (click)="setTypedFilter(filter.filter)"
+      class="filter-chip"
+      [ngClass]="{ selected: selectedFilter === filter.filter }"
+    >
+      <mat-icon>{{ getFilterIcon(filter.filter) }}</mat-icon>
+      {{ filter.filter }} ({{ filter.count }})
+    </button>
+  </div>
+
+  <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="notifications-list">
+    <div *ngIf="isLoading" class="notification-loading">
+      <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+      <p>Loading notifications...</p>
+    </div>
+
+    <div *ngIf="!isLoading && !errorMessage">
+      <div class="notifications-scroll">
+        <div
+          *ngFor="let notification of notifications"
+          class="notification-item"
+          [class.unread]="!notification.read"
+          [class]="getTypeClass(notification.type)"
+        >
+          <mat-icon class="notification-icon">{{
+            getNotificationIcon(notification.type)
+          }}</mat-icon>
+          <div class="notification-content">
+            <div class="notification-title">{{ notification.title }}</div>
+            <div class="notification-message">{{ notification.message }}</div>
+            <div class="notification-time">
+              {{ notification.createdAt | timeAgo }}
+            </div>
+          </div>
+          <button
+            mat-icon-button
+            *ngIf="!notification.read"
+            (click)="markAsRead(notification.id)"
+            matTooltip="Mark as read"
+            aria-label="Mark as read"
+          >
+            <mat-icon color="primary">check_circle</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="no-notifications" *ngIf="notifications.length === 0">
+        No notifications found
+      </div>
+    </div>
+  </div>
+
+  <div class="notifications-footer">
+    <button
+      mat-button
+      (click)="markAllAsRead()"
+      [disabled]="isLoading"
+      class="mark-all-read-btn"
+    >
+      Mark all as read
+    </button>
+  </div>
+
+  <app-pagination *ngIf="totalPages > 1"></app-pagination>
+</div>

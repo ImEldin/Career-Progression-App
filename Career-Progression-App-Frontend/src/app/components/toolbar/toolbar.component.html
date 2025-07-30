@@ -1,0 +1,33 @@
+<header class="toolbar">
+  <div class="logo-section">
+    <h1 class="logo-text">CareerTrack</h1>
+  </div>
+
+  <div class="toolbar-center">
+    <div class="user-info">
+      <img
+        *ngIf="profileImage"
+        [src]="profileImage!"
+        alt="Profile Image"
+        class="profile-image"
+      />
+      <div class="user-details">
+        <h2 class="user-name">{{ userName }}</h2>
+        <p class="user-role">{{ userRole }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar-right">
+    <button class="toolbar-button" (click)="toggleNotifications()">
+      <i class="fas fa-bell"></i>
+      <span *ngIf="unreadCount > 0" class="notification-badge"
+        >{{ unreadCount }}
+      </span>
+    </button>
+
+    <button class="toolbar-button logout-button" (click)="logout()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
+</header>

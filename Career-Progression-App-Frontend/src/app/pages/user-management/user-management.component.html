@@ -1,0 +1,134 @@
+<div class="user-management-container">
+    <mat-card class="management-card">
+        <mat-card-header>
+            <mat-card-title>
+                <h1 class="management-title">User Management</h1>
+            </mat-card-title>
+            <mat-card-subtitle>
+                Manage user accounts
+            </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+            <div class="filter-section">
+                <mat-form-field>
+                    <mat-label>Filter by Name</mat-label>
+                    <input matInput [(ngModel)]="filterName" (ngModelChange)="applyFilters()" placeholder="Name">
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Filter by Status</mat-label>
+                    <mat-select [(ngModel)]="filterActive" (ngModelChange)="applyFilters()">
+                        <mat-option [value]="null">All</mat-option>
+                        <mat-option [value]="true">Active</mat-option>
+                        <mat-option [value]="false">Inactive</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Filter by Position</mat-label>
+                    <mat-select [(ngModel)]="selectedPositionIds" (ngModelChange)="applyFilters()" multiple>
+                        <mat-option *ngFor="let position of positions" [value]="position.id">
+                            {{position.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-label>Filter by Team</mat-label>
+                    <mat-select [(ngModel)]="selectedTeamIds" (ngModelChange)="applyFilters()" multiple>
+                        <mat-option *ngFor="let team of teams" [value]="team.id">
+                            {{team.name}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button mat-stroked-button color="primary" (click)="clearFilters()">
+                    <mat-icon>filter_alt_off</mat-icon>
+                    Clear Filters
+                </button>
+            </div>
+
+            <div class="loading-shimmer" *ngIf="isLoading">
+                <div class="shimmer-row" *ngFor="let item of [1,2,3]"></div>
+            </div>
+
+            <div *ngIf="!isLoading">
+                <div *ngIf="users.length > 0; else noUsersTemplate">
+                    <div class="table-responsive">
+                        <table mat-table [dataSource]="users" class="full-width-table">
+                            <ng-container matColumnDef="email">
+                                <th mat-header-cell *matHeaderCellDef>User Email</th>
+                                <td mat-cell *matCellDef="let user" class="email-cell">
+                                    {{ user.email }}
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef>Status</th>
+                                <td mat-cell *matCellDef="let user">
+                                    <mat-chip-set>
+                                        <mat-chip [color]="user.active ? 'primary' : 'warn'" selected>
+                                            {{ user.active ? 'Active' : 'Inactive' }}
+                                        </mat-chip>
+                                    </mat-chip-set>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="actions">
+                                <th mat-header-cell *matHeaderCellDef class="actions-header">Actions</th>
+                                <td mat-cell *matCellDef="let user">
+                                    <button mat-raised-button
+                                            color="primary"
+                                            (click)="activateUser(user.id)"
+                                            class="action-button"
+                                            [disabled]="activatingUserId === user.id || deactivatingUserId === user.id"
+                                            *ngIf="!user.active">
+                                        <span *ngIf="activatingUserId !== user.id; else activating">
+                                            Activate
+                                        </span>
+                                        <ng-template #activating>
+                                            <mat-spinner diameter="20"></mat-spinner> Activating...
+                                        </ng-template>
+                                    </button>
+                            
+                                    <button mat-raised-button
+                                            color="warn"
+                                            (click)="deactivateUser(user.id)"
+                                            class="action-button"
+                                            [disabled]="activatingUserId === user.id || deactivatingUserId === user.id"
+                                            *ngIf="user.active">
+                                        <span *ngIf="deactivatingUserId !== user.id; else deactivating">
+                                            Deactivate
+                                        </span>
+                                        <ng-template #deactivating>
+                                            <mat-spinner diameter="20"></mat-spinner> Deactivating...
+                                        </ng-template>
+                                    </button>
+                                </td>
+                            </ng-container>
+                            
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <span class="user-count">{{ users.length }} user(s)</span>
+                        <button mat-button color="primary" (click)="refreshList()">
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <ng-template #noUsersTemplate>
+                    <div class="no-users-message">
+                        <mat-icon class="large-icon">group_off</mat-icon>
+                        <h3>No users found</h3>
+                        <p>Try adjusting your filters</p>
+                        <button mat-stroked-button (click)="refreshList()">
+                            Check again
+                        </button>
+                    </div>
+                </ng-template>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</div>

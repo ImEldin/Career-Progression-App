@@ -1,0 +1,230 @@
+<div class="container">
+  <div class="header">
+    <h2>Tasks</h2>
+    <button
+      *ngIf="isAdminOrCto"
+      mat-flat-button
+      color="primary"
+      (click)="createTask()"
+    >
+      <mat-icon>add</mat-icon>
+      Create Task
+    </button>
+  </div>
+
+  <div class="filters-section">
+    <div class="filters-grid">
+      <!-- User filter -->
+      <mat-form-field appearance="outline" *ngIf="!isUser">
+        <mat-label>User</mat-label>
+        <mat-select
+          [(ngModel)]="selectedUser"
+          (selectionChange)="applyFilters()"
+        >
+          <mat-option [value]="null">All Users</mat-option>
+          <mat-option *ngFor="let user of users" [value]="user">
+            {{ user.firstName }} {{ user.lastName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Team filter -->
+      <mat-form-field appearance="outline">
+        <mat-label>Team</mat-label>
+        <mat-select
+          [(ngModel)]="selectedTeam"
+          (selectionChange)="applyFilters()"
+        >
+          <mat-option [value]="null">All Teams</mat-option>
+          <mat-option *ngFor="let team of teams" [value]="team">
+            {{ team }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Position filter -->
+      <mat-form-field appearance="outline" *ngIf="!isUser">
+        <mat-label>Position</mat-label>
+        <mat-select
+          [(ngModel)]="selectedPosition"
+          (selectionChange)="applyFilters()"
+        >
+          <mat-option [value]="null">All Positions</mat-option>
+          <mat-option *ngFor="let position of positions" [value]="position">
+            {{ position.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Status filter -->
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select
+          [(ngModel)]="selectedStatus"
+          (selectionChange)="applyFilters()"
+        >
+          <mat-option [value]="null">All Statuses</mat-option>
+          <mat-option *ngFor="let status of statuses" [value]="status">
+            {{ status.replace("_", " ") }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Template filter -->
+      <mat-form-field appearance="outline" *ngIf="!isUser">
+        <mat-label>Template</mat-label>
+        <mat-select
+          [(ngModel)]="selectedTemplate"
+          (selectionChange)="applyFilters()"
+        >
+          <mat-option [value]="null">All Templates</mat-option>
+          <mat-option *ngFor="let template of templates" [value]="template">
+            {{ template.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Search field -->
+      <mat-form-field appearance="outline">
+        <mat-label>Search Tasks</mat-label>
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+          matInput
+          [(ngModel)]="searchQuery"
+          (input)="applyFilters()"
+          placeholder="Search by task name..."
+        />
+        <button
+          *ngIf="searchQuery"
+          matSuffix
+          mat-icon-button
+          aria-label="Clear"
+          (click)="searchQuery = ''; applyFilters()"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <button
+      mat-stroked-button
+      color="primary"
+      (click)="clearFilters()"
+      [disabled]="
+        !selectedUser &&
+        !selectedTeam &&
+        !selectedPosition &&
+        !selectedStatus &&
+        !selectedTemplate &&
+        !searchQuery
+      "
+    >
+      <mat-icon>filter_alt_off</mat-icon>
+      Clear Filters
+    </button>
+  </div>
+
+  <div class="tasks-container">
+    <div *ngIf="loading" class="loading-state">
+      <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+      <p>Loading tasks...</p>
+    </div>
+
+    <div *ngIf="!loading && filteredTasks.length === 0" class="empty-state">
+      <mat-icon>assignment_late</mat-icon>
+      <p>No tasks found</p>
+      <small>Try adjusting your filters or create a new task</small>
+    </div>
+
+    <div *ngIf="!loading && filteredTasks.length > 0" class="tasks-grid">
+      <mat-card *ngFor="let task of filteredTasks" class="task-card">
+        <mat-card-content>
+          <div class="task-header">
+            <div class="task-header-row">
+              <mat-chip
+                [style.background-color]="getStatusColor(task.status)"
+                [style.color]="'white'"
+              >
+                <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+                {{ formatTaskStatus(task.status) }}
+              </mat-chip>
+              <div class="task-actions">
+                <button
+                  mat-icon-button
+                  color="primary"
+                  (click)="viewTask(task)"
+                  class="view-btn"
+                >
+                  <mat-icon>visibility</mat-icon>
+                </button>
+
+                <ng-container *ngIf="isAdminOrCto">
+                  <button
+                    mat-icon-button
+                    color="primary"
+                    (click)="editTask(task)"
+                    class="edit-btn"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="deleteTask(task)"
+                    class="delete-btn"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </ng-container>
+              </div>
+            </div>
+            <div class="task-title-row">
+              <h3>{{ task.title }}</h3>
+            </div>
+          </div>
+
+          <p class="task-description">{{ task.description }}</p>
+
+          <div class="task-meta">
+            <div class="meta-item">
+              <mat-icon>person</mat-icon>
+              <span>{{ task.assignedToName || "Unassigned" }}</span>
+            </div>
+            <div class="meta-item">
+              <mat-icon>category</mat-icon>
+              <span>{{ task.templateName || "No template" }}</span>
+            </div>
+            <div class="meta-item">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ task.createdAt | date : "medium" }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngIf="!loading && totalPages > 1" class="pagination-controls">
+      <button
+        mat-button
+        [disabled]="currentPage === 0"
+        (click)="onPageChange(currentPage - 1)"
+      >
+        <mat-icon>chevron_left</mat-icon>
+        Previous
+      </button>
+
+      <span class="page-info">
+        Page {{ currentPage + 1 }} of {{ totalPages }}
+      </span>
+
+      <button
+        mat-button
+        [disabled]="currentPage >= totalPages - 1"
+        (click)="onPageChange(currentPage + 1)"
+      >
+        Next
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

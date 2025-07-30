@@ -1,0 +1,198 @@
+<div class="container">
+  <div class="header">
+    <div class="breadcrumb">
+      <span
+        class="breadcrumb-item"
+        [class.disabled]="navigating"
+        (click)="navigateToDashboard()"
+        title="Go back to Dashboard"
+        >Dashboard</span
+      >
+      <mat-icon *ngIf="canManageTasks" class="breadcrumb-separator"
+        >chevron_right</mat-icon
+      >
+      <span
+        *ngIf="canManageTasks"
+        class="breadcrumb-item"
+        [class.disabled]="navigating"
+        (click)="navigateToTasks()"
+        title="Go back to Tasks list"
+        >Tasks</span
+      >
+      <mat-icon class="breadcrumb-separator">chevron_right</mat-icon>
+      <span class="breadcrumb-item">Task Details</span>
+    </div>
+    <h2>Task Details</h2>
+  </div>
+
+  <div *ngIf="loading || checkingAccess" class="loading-state">
+    <mat-icon class="loading-icon">
+      <span *ngIf="loading">hourglass_empty</span>
+      <span *ngIf="checkingAccess">security</span>
+    </mat-icon>
+    <p *ngIf="loading">Loading task details...</p>
+    <p *ngIf="checkingAccess">Checking access permissions...</p>
+  </div>
+
+  <div *ngIf="!loading && !checkingAccess && task" class="task-details">
+    <mat-card class="task-card">
+      <mat-card-content>
+        <div class="task-header">
+          <h3>{{ task.title }}</h3>
+          <div class="task-actions">
+            <mat-chip
+              [style.background-color]="getStatusColor(task.status)"
+              [style.color]="'white'"
+            >
+              <mat-icon>{{ getStatusIcon(task.status) }}</mat-icon>
+              {{ formatTaskStatus(task.status) }}
+            </mat-chip>
+            <button
+              *ngIf="canManageTasks"
+              mat-stroked-button
+              color="primary"
+              (click)="editTask()"
+              title="Edit this task"
+            >
+              <mat-icon>edit</mat-icon>
+              Edit Task
+            </button>
+          </div>
+        </div>
+
+        <div class="task-content">
+          <div class="section">
+            <h4>Description</h4>
+            <div class="description-text">{{ task.description }}</div>
+          </div>
+
+          <div *ngIf="task.templateId && task.templateName" class="section">
+            <div
+              class="template-header"
+              (click)="toggleTemplateDetails()"
+              title="Click to view template details and requirements"
+            >
+              <h4>Template Details: {{ task.templateName }}</h4>
+              <mat-icon
+                class="expand-icon"
+                [class.expanded]="showTemplateDetails"
+              >
+                {{ showTemplateDetails ? "expand_less" : "expand_more" }}
+              </mat-icon>
+            </div>
+
+            <div *ngIf="showTemplateDetails" class="template-details">
+              <div *ngIf="loadingTemplateDetails" class="template-loading">
+                <mat-icon class="loading-icon" title="Loading"
+                  >hourglass_empty</mat-icon
+                >
+                <p title="Loading template details">
+                  Loading template details...
+                </p>
+              </div>
+
+              <div *ngIf="!loadingTemplateDetails">
+                <div *ngIf="templateDetails" class="template-section">
+                  <h5 title="Template description">Template Description</h5>
+                  <div
+                    class="template-content"
+                    [innerHTML]="templateDetails"
+                  ></div>
+                </div>
+
+                <div *ngIf="templateRequirements" class="template-section">
+                  <h5 title="Task requirements and conditions">
+                    Task Requirements
+                  </h5>
+                  <div
+                    class="template-content"
+                    [innerHTML]="templateRequirements"
+                  ></div>
+                </div>
+
+                <div
+                  *ngIf="!templateDetails && !templateRequirements"
+                  class="template-no-content"
+                >
+                  <p title="No template details available">
+                    No template details available
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="task-meta">
+            <div class="meta-item">
+              <mat-icon>person</mat-icon>
+              <div class="meta-content">
+                <span class="meta-label">Assigned To</span>
+                <span class="meta-value">{{
+                  task.assignedToName || "Unassigned"
+                }}</span>
+              </div>
+            </div>
+
+            <div class="meta-item">
+              <mat-icon>category</mat-icon>
+              <div class="meta-content">
+                <span class="meta-label">Template</span>
+                <span class="meta-value">{{
+                  task.templateName || "No template"
+                }}</span>
+              </div>
+            </div>
+
+            <div class="meta-item">
+              <mat-icon>schedule</mat-icon>
+              <div class="meta-content">
+                <span class="meta-label">Created</span>
+                <span class="meta-value">{{
+                  task.createdAt | date : "medium"
+                }}</span>
+              </div>
+            </div>
+
+            <div class="meta-item">
+              <mat-icon>update</mat-icon>
+              <div class="meta-content">
+                <span class="meta-label">Last Updated</span>
+                <span class="meta-value">{{
+                  task.updatedAt | date : "medium"
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="button-group">
+      <button
+        mat-stroked-button
+        [disabled]="navigating"
+        (click)="navigateToDashboard()"
+        title="Return to Dashboard"
+      >
+        <mat-icon *ngIf="!navigating">dashboard</mat-icon>
+        <mat-icon *ngIf="navigating" class="loading-icon"
+          >hourglass_empty</mat-icon
+        >
+        Back to Dashboard
+      </button>
+      <button
+        *ngIf="canManageTasks"
+        mat-stroked-button
+        [disabled]="navigating"
+        (click)="navigateToTasks()"
+        title="Return to Tasks list"
+      >
+        <mat-icon *ngIf="!navigating">arrow_back</mat-icon>
+        <mat-icon *ngIf="navigating" class="loading-icon"
+          >hourglass_empty</mat-icon
+        >
+        Back to Tasks
+      </button>
+    </div>
+  </div>
+</div>

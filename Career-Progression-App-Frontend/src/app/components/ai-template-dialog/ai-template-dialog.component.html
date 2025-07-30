@@ -1,0 +1,66 @@
+<div class="ai-dialog-container">
+  <div class="dialog-header">
+    <mat-icon class="ai-icon">smart_toy</mat-icon>
+    <h2>AI Template Generator</h2>
+  </div>
+
+  <div class="dialog-content">
+    <div class="explanation-section">
+      <p class="explanation-text">
+        <strong>How to use:</strong> Simply describe what you need to learn or the skills you want to develop. 
+        For example: "Basic Level Angular, Routing, AuthGuard" or "Advanced JavaScript, React Hooks, State Management".
+      </p>
+      <p class="explanation-text">
+        The AI will generate a complete template including name, description, requirements, and suggested skills.
+      </p>
+    </div>
+
+    <form [formGroup]="aiForm" (ngSubmit)="onGenerate()">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>What do you want to learn?</mat-label>
+        <textarea
+          matInput
+          formControlName="keywords"
+          placeholder="e.g., Basic Level Angular, Routing, AuthGuard, TypeScript fundamentals..."
+          rows="3"
+          [disabled]="isLoading"
+        ></textarea>
+        <mat-error *ngIf="keywords?.errors?.['required'] && keywords?.touched">
+          Please describe what you want to learn
+        </mat-error>
+        <mat-error *ngIf="keywords?.errors?.['minlength'] && keywords?.touched">
+          Description must be at least 3 characters
+        </mat-error>
+      </mat-form-field>
+
+      <div class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
+
+      <div class="dialog-actions">
+        <button 
+          type="button" 
+          mat-button 
+          (click)="onCancel()"
+          [disabled]="isLoading"
+        >
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          mat-raised-button 
+          color="primary"
+          [disabled]="aiForm.invalid || isLoading"
+        >
+          <mat-spinner 
+            diameter="20" 
+            *ngIf="isLoading"
+            class="spinner"
+          ></mat-spinner>
+          <mat-icon *ngIf="!isLoading">auto_awesome</mat-icon>
+          {{ isLoading ? 'Generating...' : 'Generate Template' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div> 

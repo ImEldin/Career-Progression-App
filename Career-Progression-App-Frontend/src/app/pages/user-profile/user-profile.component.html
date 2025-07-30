@@ -1,0 +1,194 @@
+<div class="profile-wrapper">
+  <div class="profile-header">
+    <div class="profile-image-column">
+      <img
+        *ngIf="user"
+        [src]="user.profilePictureUrl || 'assets/profile-image.jpg'"
+        class="profile-img"
+        alt="Profile Picture"
+      />
+    </div>
+
+    <div class="profile-info-column" *ngIf="user">
+      <h2>{{ user.firstName }} {{ user.lastName }}</h2>
+      <p class="role">{{ user.roleName }}</p>
+      <p class="current-position">Position: {{ getCurrentPositionName() }}</p>
+      <p class="current-level">
+        <span class="chip">Current Level: {{ currentLevel }}</span>
+      </p>
+    </div>
+
+    <div class="profile-action-column">
+      <button class="manage-btn" (click)="openManagePosition()">
+        Manage Position
+      </button>
+      <button class="manage-btn" (click)="openManageSkillsDialog(user)">
+        Manage Skills
+      </button>
+    </div>
+  </div>
+
+  <div class="progress-section">
+    <h3>Career Progress</h3>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+    </div>
+    <p class="progress-text">
+      {{ 100 - progressPercentage }}% remaining to reach next level
+      {{ nextLevel }}
+    </p>
+  </div>
+
+  <div class="cards">
+    <div class="card tickets">
+      <h4>Tickets Overview</h4>
+      <div class="ticket-row completed">
+        <span>Completed Tickets</span>
+        <span>{{ getCompletedTasksCount() }}</span>
+      </div>
+      <div class="ticket-row pending">
+        <span>Pending Tickets</span>
+        <span>{{ getPendingTasksCount() }}</span>
+      </div>
+      <div class="ticket-row review">
+        <span>In Review Tickets</span>
+        <span>{{ getInreviewTasksCount() }}</span>
+      </div>
+      <div class="ticket-row ongoing">
+        <span>Ongoing Tickets</span>
+        <span>{{ getOngoingTasksCount() }}</span>
+      </div>
+    </div>
+    <div class="card feedback" *ngIf="taskComments && taskComments.length > 0">
+      <h4>Team Lead Feedback</h4>
+      <div class="comments-container">
+        <div class="comment-item" *ngFor="let comment of taskComments">
+          <div class="comment-header">
+            <div class="comment-author">{{ comment.authorName }}</div>
+            <div class="comment-task">Task: {{ comment.taskTitle }}</div>
+          </div>
+          <div class="comment-content">{{ comment.message }}</div>
+          <div class="comment-date">{{ comment.createdAt | timeAgo }}</div>
+        </div>
+      </div>
+      <div *ngIf="!taskComments || taskComments.length === 0">
+        <p class="no-reviews">No feedback available yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="achievements-section">
+    <h3>Achievement History</h3>
+    <div
+      class="achievements-container"
+      *ngIf="achievements && achievements.length > 0; else noAchievements"
+    >
+      <div class="achievement-item" *ngFor="let achievement of achievements">
+        <div class="achievement-icon">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <div
+          class="achievement-details"
+          (click)="openAIReportDialog(achievement)"
+          style="cursor: pointer"
+        >
+          <p class="achievement-title">
+            {{ getAchievementTitle(achievement) }}
+          </p>
+          <p class="achievement-date">
+            Approved on {{ achievement.updatedAt | date : "dd-MM-yyyy" }} ({{
+              achievement.updatedAt | timeAgo
+            }})
+          </p>
+        </div>
+      </div>
+    </div>
+    <ng-template #noAchievements>
+      <p class="no-achievements">No achievements available yet.</p>
+    </ng-template>
+  </div>
+
+  <div
+    class="position-dialog-overlay"
+    *ngIf="isManagingPosition"
+    (click)="closeManagePosition()"
+  >
+    <div class="position-dialog" (click)="$event.stopPropagation()">
+      <div class="dialog-header">
+        <h3>Manage Position</h3>
+        <button class="close-btn" (click)="closeManagePosition()">×</button>
+      </div>
+
+      <form
+        [formGroup]="positionForm"
+        (ngSubmit)="savePosition()"
+        class="position-form"
+      >
+        <div class="form-group">
+          <label for="position">Position</label>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-select
+              formControlName="positionId"
+              placeholder="Select position"
+            >
+              <mat-option
+                *ngFor="let position of allPositions"
+                [value]="position.id"
+              >
+                {{ position.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="positionForm.get('positionId')?.hasError('required')"
+            >
+              Position is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <label for="level">Level</label>
+          <mat-form-field appearance="fill" class="full-width">
+            <input
+              matInput
+              type="number"
+              formControlName="level"
+              placeholder="Enter level (1-10)"
+              min="1"
+              max="10"
+            />
+            <mat-error *ngIf="positionForm.get('level')?.hasError('required')">
+              Level is required
+            </mat-error>
+            <mat-error
+              *ngIf="
+                positionForm.get('level')?.hasError('min') ||
+                positionForm.get('level')?.hasError('max')
+              "
+            >
+              Level must be between 1 and 10
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="dialog-actions">
+          <button
+            type="button"
+            class="btn btn-cancel"
+            (click)="closeManagePosition()"
+            [disabled]="isSavingPosition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="btn btn-save"
+            [disabled]="!positionForm.valid || isSavingPosition"
+          >
+            {{ isSavingPosition ? "Saving..." : "Save Position" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title>Review Task</h2>
+
+  <mat-dialog-content>
+    <div class="task-details">
+      <div class="task-header">
+        <h3>{{task.title}}</h3>
+        <mat-chip [style.background-color]="'#FFA726'" [style.color]="'white'">
+          <mat-icon>{{getStatusIcon(task.status)}}</mat-icon>
+          {{formatTaskStatus(task.status)}}
+        </mat-chip>
+      </div>
+
+      <div class="task-meta">
+        <div class="meta-item">
+          <mat-icon>person</mat-icon>
+          <div class="meta-content">
+            <span class="meta-label">Assigned To</span>
+            <span class="meta-value">{{task.assignedToName || 'Unassigned'}}</span>
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <mat-icon>event</mat-icon>
+          <div class="meta-content">
+            <span class="meta-label">Created At</span>
+            <span class="meta-value">{{task.createdAt | date:'medium'}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-description">
+        <h4>Description</h4>
+        <p>{{task.description}}</p>
+      </div>
+
+      <form [formGroup]="reviewForm" class="review-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Review Comment</mat-label>
+          <textarea
+            matInput
+            formControlName="comment"
+            rows="4"
+            placeholder="Enter your review comment..."
+            required
+          ></textarea>
+          <mat-error *ngIf="reviewForm.get('comment')?.hasError('required')">
+            Comment is required
+          </mat-error>
+        </mat-form-field>
+      </form>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" [disabled]="loading">Cancel</button>
+    <button
+      mat-raised-button
+      color="warn"
+      (click)="onReject()"
+      [disabled]="!reviewForm.valid || loading"
+    >
+      <mat-icon>close</mat-icon>
+      Reject
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onApprove()"
+      [disabled]="!reviewForm.valid || loading"
+    >
+      <mat-icon>check</mat-icon>
+      Approve
+    </button>
+  </mat-dialog-actions>
+</div> 

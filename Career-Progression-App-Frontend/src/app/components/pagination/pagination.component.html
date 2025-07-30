@@ -1,0 +1,28 @@
+<div class="pagination-container">
+    <div class="pagination">
+        <button class="pagination-button jump-button" (click)="firstPage()" [disabled]="currentPage === 0"
+            aria-label="First page">
+            &laquo;
+        </button>
+
+        <button class="pagination-button" (click)="previousPage()" [disabled]="currentPage === 0"
+            aria-label="Previous page">
+            &lsaquo;
+        </button>
+
+        <div class="page-info">
+            Page <span class="current-page">{{ currentPage + 1 }}</span>
+            of <span class="total-pages">{{ totalPages }}</span>
+        </div>
+
+        <button class="pagination-button" (click)="nextPage()" [disabled]="currentPage === totalPages - 1"
+            aria-label="Next page">
+            &rsaquo;
+        </button>
+
+        <button class="pagination-button jump-button" (click)="lastPage()" [disabled]="currentPage === totalPages - 1"
+            aria-label="Last page">
+            &raquo;
+        </button>
+    </div>
+</div>

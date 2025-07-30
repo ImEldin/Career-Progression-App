@@ -1,0 +1,17 @@
+<h2 mat-dialog-title class="dialog-title">Edit User Role</h2>
+
+<mat-dialog-content class="dialog-content">
+  <mat-form-field appearance="fill" class="dialog-form-field">
+    <mat-label>Select New Role</mat-label>
+    <mat-select [(value)]="selectedRole">
+      <mat-option *ngFor="let role of roles" [value]="role">{{
+        role
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-stroked-button color="basic" (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="confirm()">Save</button>
+</mat-dialog-actions>

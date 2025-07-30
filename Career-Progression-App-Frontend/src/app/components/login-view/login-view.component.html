@@ -1,0 +1,31 @@
+<div class="login-container">
+  <div class="login-box">
+    <div class="logo">
+      <img src="assets/images/logo.jpg" alt="CareerHub Logo" class="logo-image">
+      <h1 class="logo-title">CareerHub</h1>
+      <p class="logo-subtitle">Internal Career Progression System</p>
+    </div>
+
+    <div class="google-signin-container">
+      <asl-google-signin-button type="standard" size="large" [text]="'signin_with'" [shape]="'pill'"
+        [theme]="'filled_blue'" [logo_alignment]="'left'">
+      </asl-google-signin-button>
+    </div>
+
+    <p class="company-email-msg">
+      Sign in with your company email to access the system.
+    </p>
+
+    <div class="error-message" *ngIf="errorMessage">
+      <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+    </div>
+
+    <div class="info-message" *ngIf="infoMessage && !errorMessage">
+      <i class="fas fa-info-circle"></i> {{ infoMessage }}
+    </div>
+
+    <div class="loading-spinner" *ngIf="isLoading">
+      <i class="fas fa-spinner fa-spin"></i> Signing in...
+    </div>
+  </div>
+</div>

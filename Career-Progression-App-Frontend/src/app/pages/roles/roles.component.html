@@ -1,0 +1,42 @@
+<div class="roles-header">
+  <h2>Roles Overview</h2>
+  <button mat-flat-button color="secondary" (click)="openRoleDialog()">
+    + Create
+  </button>
+</div>
+
+<div *ngIf="loading" class="hourglass-loading">
+  <mat-icon class="hourglass-icon">hourglass_empty</mat-icon>
+  <p>Loading roles...</p>
+</div>
+
+<div *ngFor="let role of roles; let i = index" class="role-card">
+  <div class="role-title" (click)="toggleRole(i)">
+    <span>{{ role.name }}</span>
+    <span class="expand-icon">{{ expandedRoles[i] ? "▲" : "▼" }}</span>
+  </div>
+
+  <div *ngIf="expandedRoles[i]" class="role-content">
+    <ul>
+      <li *ngFor="let perm of role.permissionNames">
+        <strong>{{ perm.replaceAll("_", " ") }}</strong>
+        <p class="description">{{ getPermissionDescription(perm) }}</p>
+      </li>
+    </ul>
+    <div
+      class="role-actions"
+      *ngIf="role.name !== 'USER' && role.name !== 'ADMIN'"
+    >
+      <button mat-flat-button color="accent" (click)="editRole(role)">
+        Edit
+      </button>
+      <button
+        mat-flat-button
+        color="warn"
+        (click)="deleteRole(role.id, role.name)"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</div>

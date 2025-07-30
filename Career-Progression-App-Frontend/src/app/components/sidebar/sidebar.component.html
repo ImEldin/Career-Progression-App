@@ -1,0 +1,19 @@
+<div class="sidebar">
+  <div class="scroll-area">
+    <nav class="nav-menu">
+      <ul class="nav-list">
+        <li
+          class="nav-item"
+          *ngFor="let item of menuItems"
+          [routerLinkActive]="'active'"
+        >
+          <a [routerLink]="[item.link]" class="nav-link">
+            <i class="fas fa-{{ item.icon }}"></i>
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+        <li style="height: 30px"></li>
+      </ul>
+    </nav>
+  </div>
+</div>

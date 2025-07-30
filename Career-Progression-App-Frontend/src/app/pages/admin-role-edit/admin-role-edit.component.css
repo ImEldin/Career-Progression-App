@@ -1,0 +1,108 @@
+.user-management-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.management-card {
+  width: 100%;
+  max-width: 1000px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.management-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle-text {
+  color: #666;
+  font-size: 14px;
+}
+
+.filter-section {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.filter-field {
+  flex: 1;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.full-width-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.full-width-table th,
+.full-width-table td {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.full-width-table td {
+  padding: 12px 2px 12px 4px;
+}
+
+.full-width-table th {
+  background-color: #f9f9f9;
+  font-weight: 600;
+  color: #444;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  font-size: 14px;
+  color: #666;
+}
+
+.no-users-message {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.no-users-message .large-icon {
+  font-size: 64px;
+  color: #bbb;
+}
+
+.hourglass-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 150px;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.hourglass-icon {
+  font-size: 48px;
+  height: 48px;
+  width: 48px;
+  animation: spin 1s linear infinite;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

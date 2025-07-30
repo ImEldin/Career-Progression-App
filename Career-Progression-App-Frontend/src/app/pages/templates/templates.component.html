@@ -1,0 +1,168 @@
+<div class="ticket-template-container">
+  <div class="template-header">
+    <mat-icon
+      aria-hidden="false"
+      aria-label="Example home icon"
+      fontIcon="confirmation_number"
+    ></mat-icon>
+    <h2>
+      {{ isEditMode ? "Edit Ticket Template" : "Create Ticket Template" }}
+    </h2>
+  </div>
+  <form [formGroup]="templateForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="templateName">Template Name</label>
+      <input
+        id="templateName"
+        type="text"
+        formControlName="name"
+        placeholder="Enter template name"
+        class="form-control"
+        [disabled]="isSaving"
+      />
+      <div
+        class="error-message"
+        *ngIf="
+          templateForm.get('templateName')?.touched &&
+          templateForm.get('templateName')?.invalid
+        "
+      >
+        Template name is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="description">Description</label>
+      <div class="description-container">
+        <textarea
+          id="description"
+          formControlName="description"
+          placeholder="Provide detailed information about this ticket template"
+          class="form-control"
+          rows="4"
+          [disabled]="isSaving"
+        ></textarea>
+        <button
+          type="button"
+          mat-stroked-button
+          color="primary"
+          class="ai-button"
+          (click)="openAIGenerationDialog()"
+          [disabled]="isSaving || isGeneratingAI"
+        >
+          <mat-icon>smart_toy</mat-icon>
+          AI Generate
+        </button>
+      </div>
+      <div
+        class="error-message"
+        *ngIf="
+          templateForm.get('description')?.touched &&
+          templateForm.get('description')?.invalid
+        "
+      >
+        Description is required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="taskRequirements">Task Requirements</label>
+      <textarea
+        id="taskRequirements"
+        formControlName="taskRequirements"
+        placeholder="List all conditions that must be met"
+        class="form-control"
+        rows="4"
+        [disabled]="isSaving"
+      ></textarea>
+      <div
+        class="error-message"
+        *ngIf="
+          templateForm.get('taskRequirements')?.touched &&
+          templateForm.get('taskRequirements')?.invalid
+        "
+      >
+        Task requirements are required
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="skills">Skills</label>
+      <mat-form-field class="full-width" appearance="fill">
+        <mat-chip-grid #chipGrid>
+          <mat-chip-row
+            *ngFor="let skill of selectedSkills"
+            [removable]="true"
+            (removed)="removeSkill(skill)"
+          >
+            {{ skill.name }}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+          <input
+            placeholder="Add skill"
+            [matAutocomplete]="auto"
+            [formControl]="skillCtrl"
+            [matChipInputFor]="chipGrid"
+            (matChipInputTokenEnd)="addSkillFromInput($event)"
+          />
+        </mat-chip-grid>
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selectSkill($event)"
+        >
+          <mat-option
+            *ngIf="showCreateOptionSimple"
+            [value]="'__create__' + skillCtrl.value"
+            class="create-option"
+          >
+            <em>Create new skill: "{{ skillCtrl.value }}"</em>
+          </mat-option>
+          <mat-divider *ngIf="showCreateOptionSimple"></mat-divider>
+          <mat-option *ngFor="let option of allSkills" [value]="option.name">
+            {{ option.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <!-- AI Generation Loading Indicator -->
+    <div class="ai-loading" *ngIf="isGeneratingAI">
+      <mat-spinner diameter="24"></mat-spinner>
+      <span>AI is generating your template...</span>
+    </div>
+
+    <div class="button-group">
+      <button
+        type="button"
+        class="btn btn-cancel"
+        (click)="onCancel()"
+        [disabled]="isSaving || isGeneratingAI"
+      >
+        Reset
+      </button>
+      <button
+        type="submit"
+        class="btn btn-save"
+        [disabled]="isSaving || isGeneratingAI"
+      >
+        {{
+          isSaving
+            ? "Saving..."
+            : isEditMode
+            ? "Update Template"
+            : "Save Template"
+        }}
+      </button>
+    </div>
+
+    <div class="success-message" *ngIf="showSuccessMessage">
+      {{
+        isEditMode
+          ? "Template updated successfully!"
+          : "Template saved successfully!"
+      }}
+    </div>
+  </form>
+</div>

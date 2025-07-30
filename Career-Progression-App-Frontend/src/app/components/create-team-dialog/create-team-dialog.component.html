@@ -1,0 +1,144 @@
+<h2 mat-dialog-title style="margin-bottom: 3px">Create New Team</h2>
+
+<mat-dialog-content>
+  <div class="dialog-body">
+    <mat-form-field
+      appearance="outline"
+      style="width: 100%; margin-bottom: 6px"
+    >
+      <mat-label>Team Name</mat-label>
+      <input matInput [(ngModel)]="teamName" />
+    </mat-form-field>
+
+    <div *ngIf="loading" class="loading-container">
+      <mat-spinner diameter="36" strokeWidth="4" color="primary"></mat-spinner>
+    </div>
+
+    <div *ngIf="!loading">
+      <h3 style="margin-bottom: 12px">Select Team Lead and Members</h3>
+
+      <div class="filter-box">
+        <div class="filter-row">
+          <input
+            type="text"
+            [(ngModel)]="filters.name"
+            (ngModelChange)="applyFilters()"
+            placeholder="Name"
+            class="filter-input"
+          />
+          <input
+            type="text"
+            [(ngModel)]="filters.email"
+            (ngModelChange)="applyFilters()"
+            placeholder="Email"
+            class="filter-input"
+          />
+          <input
+            type="text"
+            [(ngModel)]="filters.role"
+            (ngModelChange)="applyFilters()"
+            placeholder="Role"
+            class="filter-input"
+          />
+        </div>
+
+        <div class="filter-row">
+          <input
+            type="text"
+            [(ngModel)]="filters.team"
+            (ngModelChange)="applyFilters()"
+            placeholder="Team"
+            class="filter-input"
+          />
+          <input
+            type="text"
+            [(ngModel)]="filters.skill"
+            (ngModelChange)="applyFilters()"
+            placeholder="Skill"
+            class="filter-input"
+          />
+          <input
+            type="text"
+            [(ngModel)]="filters.tag"
+            (ngModelChange)="applyFilters()"
+            placeholder="Tag"
+            class="filter-input"
+          />
+        </div>
+      </div>
+
+      <div *ngIf="filteredUsers.length === 0" class="no-users-found">
+        <mat-icon class="search_off" color="disabled">assignment_late</mat-icon>
+        <h3>No users found</h3>
+        <p>Try adjusting your filters or add new users.</p>
+      </div>
+
+      <div class="user-list">
+        <mat-card
+          *ngFor="let user of filteredUsers"
+          class="user-card"
+          [class.selected-lead]="selectedLeadId === user.id"
+          [class.selected-member]="isMemberSelected(user.id)"
+          (click)="toggleUser(user.id)"
+        >
+          <div class="user-info">
+            <img
+              *ngIf="user.profilePictureUrl; else fallback"
+              [src]="user.profilePictureUrl"
+              class="user-avatar"
+            />
+            <ng-template #fallback>
+              <div class="user-avatar fallback-avatar">
+                {{ user.firstName[0] }}
+              </div>
+            </ng-template>
+
+            <div class="user-details">
+              <div
+                class="user-name-email"
+                [matTooltip]="buildTooltip(user)"
+                matTooltipPosition="above"
+                matTooltipClass="multi-line-tooltip"
+              >
+                <div class="user-name">
+                  {{ user.firstName }} {{ user.lastName }}
+                </div>
+                <div class="user-email">{{ user.email }}</div>
+              </div>
+              <div
+                class="inline-role-chip"
+                [ngClass]="{
+                  lead: selectedLeadId === user.id,
+                  member:
+                    selectedLeadId !== user.id && isMemberSelected(user.id),
+                  'not-selected':
+                    selectedLeadId !== user.id && !isMemberSelected(user.id)
+                }"
+              >
+                {{
+                  selectedLeadId === user.id
+                    ? "Team Lead"
+                    : isMemberSelected(user.id)
+                    ? "Member"
+                    : "Not Selected"
+                }}
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions style="margin-top: 24px">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="submit()"
+    [disabled]="isCreateDisabled"
+  >
+    Create
+  </button>
+</mat-dialog-actions>

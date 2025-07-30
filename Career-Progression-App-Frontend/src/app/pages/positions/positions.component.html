@@ -1,0 +1,48 @@
+<div class="template-view-container">
+  <div class="template-header">
+    <h2>Positions</h2>
+    <button class="create-button" (click)="onCreate()">
+      <mat-icon
+        aria-hidden="false"
+        aria-label="Create new position"
+        fontIcon="add"
+      ></mat-icon>
+      Create New Position
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="hourglass-loading">
+    <mat-icon class="hourglass-icon">hourglass_empty</mat-icon>
+    <p>Loading positions...</p>
+  </div>
+
+  <div class="tickets-list" *ngIf="positions.length > 0 && !loading">
+    <div *ngFor="let position of positions" class="ticket-card">
+      <div class="ticket-content">
+        <h3>{{ position.name }}</h3>
+      </div>
+      <button class="edit-button" (click)="onEdit(position.id)">
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Edit position"
+          fontIcon="edit"
+        ></mat-icon>
+        Edit
+      </button>
+    </div>
+  </div>
+
+  <ng-template #noPositions>
+    <div *ngIf="positions.length === 0 && !loading" class="no-tickets">
+      <p>No positions found. Create your first position to get started!</p>
+      <button class="create-button" (click)="onCreate()">
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Create new position"
+          fontIcon="home"
+        ></mat-icon>
+        Create New Position
+      </button>
+    </div>
+  </ng-template>
+</div>

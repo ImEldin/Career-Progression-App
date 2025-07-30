@@ -1,0 +1,70 @@
+<div class="template-view-container">
+  <div class="template-header">
+    <h2>Ticket Templates</h2>
+    <button class="create-button" (click)="createNewTicket()">
+      <mat-icon
+        aria-hidden="false"
+        aria-label="Example home icon"
+        fontIcon="add"
+      ></mat-icon>
+      Create New Template
+    </button>
+  </div>
+
+  <div class="loading-state" *ngIf="isLoadingTemplates">
+    <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+    <p>Loading ticket templates...</p>
+  </div>
+
+  <div
+    class="tickets-list"
+    *ngIf="!isLoadingTemplates && savedTemplates.length > 0; else noTickets"
+  >
+    <div *ngFor="let template of savedTemplates" class="ticket-card">
+      <div class="ticket-content">
+        <h3>{{ template.name }}</h3>
+        <div class="section">
+          <div class="section-title">Description</div>
+          <div
+            class="description"
+            [innerHTML]="renderMarkdown(template.description)"
+          ></div>
+        </div>
+        <div class="section">
+          <div class="section-title">Task Requirements</div>
+          <div
+            class="ticket-details"
+            [innerHTML]="renderMarkdown(template.requirements)"
+          ></div>
+        </div>
+      </div>
+      <button class="edit-button" (click)="editTicket(template.id)">
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example home icon"
+          fontIcon="edit"
+        ></mat-icon>
+        Edit
+      </button>
+    </div>
+  </div>
+
+  <ng-template #noTickets>
+    <div
+      *ngIf="!isLoadingTemplates && savedTemplates.length === 0"
+      class="no-tickets"
+    >
+      <p>
+        No ticket templates found. Create your first template to get started!
+      </p>
+      <button class="create-button" (click)="createNewTicket()">
+        <mat-icon
+          aria-hidden="false"
+          aria-label="Example home icon"
+          fontIcon="home"
+        ></mat-icon>
+        Create New Template
+      </button>
+    </div>
+  </ng-template>
+</div>

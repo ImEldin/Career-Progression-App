@@ -1,0 +1,121 @@
+<div class="dashboard-container">
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+    <button (click)="loadDashboardData()">Retry</button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="dashboard-content">
+    <section class="progress-section">
+      <h2 class="section-title">Career Progress</h2>
+      <div class="level-container">
+        <div class="current-level">
+          Level: {{ currentLevel }} - {{ positionDescription }}
+        </div>
+        <div class="next-level">
+          Next Level: <span>{{ nextLevel }} - {{ nextDescription }}</span>
+        </div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-bar" [ngStyle]="getProgressBarStyle()">
+          <span class="progress-text">{{ progressPercentage }}%</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="tasks-section">
+      <h2 class="section-title">Assigned Tasks</h2>
+      <div
+        class="task-list-scrollable"
+        [class.dropdown-open]="openDropdownTaskId !== null"
+      >
+        <div *ngFor="let task of assignedTasks" class="task-item">
+          <div class="task-header">
+            <div
+              class="task-title clickable"
+              [class.disabled]="navigatingToTask"
+              (click)="viewTaskDetails(task.id)"
+              title="Click to view task details and requirements"
+            >
+              <mat-icon class="task-icon" *ngIf="!navigatingToTask"
+                >assignment</mat-icon
+              >
+              <mat-icon class="task-icon loading" *ngIf="navigatingToTask"
+                >hourglass_empty</mat-icon
+              >
+              {{ task.title }}
+            </div>
+            <div class="task-status">
+              <div
+                class="status-dropdown-container"
+                [id]="'dropdown-' + task.id"
+              >
+                <span
+                  [class]="getStatusClass(task.status)"
+                  class="status-badge clickable"
+                  [class.updating]="updatingTaskId === task.id"
+                  (click)="toggleStatusDropdown(task.id, $event)"
+                >
+                  <span *ngIf="updatingTaskId === task.id" class="loading-dots"
+                    >...</span
+                  >
+                  <span *ngIf="updatingTaskId !== task.id">{{
+                    formatTaskStatus(task.status)
+                  }}</span>
+                  <mat-icon
+                    *ngIf="updatingTaskId !== task.id"
+                    class="dropdown-icon"
+                    >arrow_drop_down</mat-icon
+                  >
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="isDropdownOpen(task.id) && updatingTaskId !== task.id"
+            class="status-dropdown"
+          >
+            <div
+              *ngFor="let status of availableStatuses"
+              class="status-option"
+              [class.active]="status === task.status"
+              (click)="updateTaskStatus(task.id, status)"
+            >
+              {{ formatTaskStatus(status) }}
+            </div>
+          </div>
+          <div class="task-footer">
+            <div class="task-due">{{ task.createdAt | timeAgo }}</div>
+          </div>
+        </div>
+        <div *ngIf="assignedTasks.length === 0" class="no-tasks">
+          No tasks assigned
+        </div>
+      </div>
+    </section>
+
+    <section class="updates-section">
+      <h2 class="section-title">Recent Notifications</h2>
+      <div class="update-list">
+        <div *ngFor="let update of recentNotifications" class="update-item">
+          <div class="update-header">
+            <mat-icon class="notification-icon">{{
+              getNotificationIcon(update.type)
+            }}</mat-icon>
+            <div class="update-message">{{ update.message }}</div>
+          </div>
+          <div class="update-footer">
+            <div class="update-time">{{ update.createdAt | timeAgo }}</div>
+          </div>
+        </div>
+        <div *ngIf="recentNotifications.length === 0" class="no-updates">
+          No recent updates
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

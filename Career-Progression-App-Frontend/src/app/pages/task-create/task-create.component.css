@@ -1,0 +1,260 @@
+.container {
+  background: #f8fcff;
+  padding: 32px;
+  border-radius: 12px;
+  max-width: 900px;
+  margin: 32px auto;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  margin: 0;
+  color: #1a1a1a;
+  font-size: 24px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+input[type="text"], textarea, select {
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #fff;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.template-select-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+button {
+  min-width: 80px;
+}
+
+/* User Selection Styles */
+.user-selection-section {
+  margin-top: 24px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  background: white;
+}
+
+.user-selection-section h3 {
+  margin: 0 0 16px 0;
+  color: #1a1a1a;
+  font-size: 18px;
+}
+
+.selection-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.users-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.available-users,
+.selected-users {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.available-users h4,
+.selected-users h4 {
+  margin: 0 0 16px 0;
+  color: #4a4a4a;
+  font-size: 16px;
+}
+
+.user-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.user-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.user-card mat-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-avatar mat-icon {
+  font-size: 24px;
+  color: #757575;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.user-role,
+.user-teams {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.user-teams {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 2px 4px;
+}
+
+.add-user-btn,
+.remove-user-btn {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.user-card:hover .add-user-btn,
+.user-card:hover .remove-user-btn {
+  opacity: 1;
+}
+
+.user-cards::-webkit-scrollbar {
+  width: 6px;
+}
+
+.user-cards::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.user-cards::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.user-cards::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.loading-users {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+}
+
+@media (max-width: 768px) {
+  .users-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .selection-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mat-form-field-prefix {
+  margin-right: 8px;
+}
+
+.mat-form-field-suffix {
+  margin-left: 8px;
+}
+
+mat-form-field.mat-form-field-appearance-outline {
+  background-color: white;
+  border-radius: 8px;
+}
+
+mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #e5e7eb;
+}
+
+mat-form-field.mat-form-field-appearance-outline:hover .mat-form-field-outline {
+  color: #b0b0b0;
+}
+
+mat-form-field .mat-icon {
+  color: #6b7280;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 4px;
+  padding: 4px 8px;
+  border: 1px solid #f44336;
+  border-radius: 4px;
+  background-color: rgba(244, 67, 54, 0.04);
+}

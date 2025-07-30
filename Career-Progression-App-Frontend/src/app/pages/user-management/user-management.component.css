@@ -1,0 +1,153 @@
+.user-management-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.management-card {
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.management-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.mat-card-header {
+    background-color: #f5f5f5;
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.mat-card-content {
+    padding: 16px;
+}
+
+.loading-shimmer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.shimmer-row {
+    height: 40px;
+    background: linear-gradient(to right, #e0e0e0 0%, #f5f5f5 20%, #e0e0e0 40%, #e0e0e0 100%);
+    background-size: 800px 40px;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -400px 0;
+    }
+    100% {
+        background-position: 400px 0;
+    }
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.full-width-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.full-width-table th, .full-width-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.full-width-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.email-cell {
+    width: 30%;
+    padding: 2px 4px;
+}
+
+.actions-header {
+    width: 15%;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+}
+
+.user-count {
+    font-size: 14px;
+    color: #555;
+}
+
+.no-users-message {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.no-users-message .large-icon {
+    font-size: 64px;
+    color: #bbb;
+}
+
+.no-users-message h3 {
+    margin: 16px 0 8px;
+    font-size: 20px;
+    color: #333;
+}
+
+.no-users-message p {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: #777;
+}
+
+.action-button {
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.action-button:hover:not(:disabled) {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.action-button:active:not(:disabled) {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+.action-button:disabled {
+    background-color: #ccc !important;
+    color: #888 !important;
+    cursor: not-allowed !important;
+}
+
+.filter-section {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.filter-section mat-form-field {
+    flex: 1;
+}
+
+.management-title{
+    margin-bottom: 5px;
+}
+
+.mat-mdc-card-subtitle{
+    margin-bottom: 10px;
+}

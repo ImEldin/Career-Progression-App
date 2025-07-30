@@ -1,0 +1,5 @@
+ALTER TABLE notification
+ADD COLUMN title VARCHAR;
+
+ALTER TABLE notification
+ADD COLUMN type VARCHAR;

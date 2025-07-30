@@ -1,0 +1,13 @@
+<ng-container *ngIf="isLoggedIn; else loginView">
+  <app-toolbar></app-toolbar>
+  <div class="main-content">
+    <app-sidebar></app-sidebar>
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #loginView>
+  <router-outlet></router-outlet>
+</ng-template>

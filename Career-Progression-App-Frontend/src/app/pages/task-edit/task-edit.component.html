@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="header">
+    <h2>Edit Task</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <mat-icon class="loading-icon">hourglass_empty</mat-icon>
+    <p>Loading task...</p>
+  </div>
+
+  <form *ngIf="!loading" [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="taskTitle">Task Title</label>
+      <input
+        id="taskTitle"
+        type="text"
+        [value]="taskTitle"
+        readonly
+        class="readonly-input"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="templateSelect">Template</label>
+      <div class="template-select-container">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-select
+            formControlName="templateId"
+            required
+            placeholder="Select template"
+          >
+            <mat-option [value]="null" disabled>Select template</mat-option>
+            <mat-option *ngFor="let t of templates" [value]="t.id">{{ t.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="error-message" *ngIf="templateId?.errors?.['required'] && templateId?.touched">
+        Please select a template
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea
+        formControlName="description"
+        placeholder="Add additional description"
+        rows="4"
+      ></textarea>
+      <div class="error-message" *ngIf="description?.errors?.['required'] && description?.touched">
+        Description is required
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button mat-stroked-button type="button" (click)="navigateToTasks()">Cancel</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="!taskForm.valid">Update Task</button>
+    </div>
+  </form>
+</div> 

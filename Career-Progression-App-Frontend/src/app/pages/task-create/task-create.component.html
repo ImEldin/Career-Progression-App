@@ -1,0 +1,166 @@
+<div class="container">
+  <div class="header">
+    <h2>Create New Task</h2>
+  </div>
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="taskTitle">Task Title</label>
+      <input
+        id="taskTitle"
+        type="text"
+        formControlName="title"
+        placeholder="Enter task title"
+        required
+      />
+      <div class="error-message" *ngIf="title?.errors?.['required'] && title?.touched">
+        Task title is required
+      </div>
+      <div class="error-message" *ngIf="title?.errors?.['minlength'] && title?.touched">
+        Task title must be at least 3 characters
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="templateSelect">Template</label>
+      <div class="template-select-container">
+        <mat-form-field appearance="fill" class="full-width">
+          <mat-select
+            formControlName="templateId"
+            required
+            placeholder="Select template"
+          >
+            <mat-option [value]="null" disabled>Select template</mat-option>
+            <mat-option *ngFor="let t of templates" [value]="t.id">{{ t.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-stroked-button color="primary" type="button" (click)="goToNewTemplate()">
+          + New
+        </button>
+      </div>
+      <div class="error-message" *ngIf="templateId?.errors?.['required'] && templateId?.touched">
+        Please select a template
+      </div>
+    </div>
+
+    <div class="user-selection-section">
+      <h3>User Selection</h3>
+      
+      <div class="selection-filters" [formGroup]="filterForm">
+        <div class="form-group">
+          <label for="teamSelect">Team</label>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-select
+              id="teamSelect"
+              formControlName="teamName"
+              placeholder="Select team"
+            >
+              <mat-option [value]="null">All Teams</mat-option>
+              <mat-option *ngFor="let team of teams" [value]="team">{{ team }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <label for="positionSelect">Positions</label>
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-select
+              id="positionSelect"
+              formControlName="positionIds"
+              multiple
+              placeholder="Select positions"
+            >
+              <mat-option *ngFor="let pos of positions" [value]="pos.id">{{ pos.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group">
+          <label for="userSearch">Search Users</label>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-icon matPrefix>search</mat-icon>
+            <input
+              matInput
+              id="userSearch"
+              type="text"
+              formControlName="userSearch"
+              placeholder="Search users by name..."
+            />
+            <button
+              *ngIf="filterForm.get('userSearch')?.value"
+              matSuffix
+              mat-icon-button
+              aria-label="Clear"
+              (click)="filterForm.get('userSearch')?.setValue('')"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="users-container">
+        <div class="available-users">
+          <h4>Available Users</h4>
+          <div class="user-cards">
+            <mat-card *ngFor="let user of filteredUsers" class="user-card">
+              <mat-card-content>
+                <div class="user-info">
+                  <div class="user-avatar" [ngStyle]="{'background-color': '#e0e0e0'}">
+                    <mat-icon *ngIf="!user.profilePictureUrl">person</mat-icon>
+                    <img *ngIf="user.profilePictureUrl" [src]="user.profilePictureUrl" alt="User avatar"/>
+                  </div>
+                  <div class="user-details">
+                    <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+                    <div class="user-role">{{ user.roleName }}</div>
+                    <div class="user-teams">{{ user.teamNames.join(', ') }}</div>
+                  </div>
+                </div>
+                <button type="button" mat-icon-button color="primary" class="add-user-btn" (click)="addUser(user)" *ngIf="!isUserSelected(user)">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+
+        <div class="selected-users">
+          <h4>Selected Users</h4>
+          <div class="user-cards">
+            <mat-card *ngFor="let user of selectedUsers" class="user-card">
+              <mat-card-content>
+                <div class="user-info">
+                  <div class="user-avatar" [ngStyle]="{'background-color': '#e0e0e0'}">
+                    <mat-icon *ngIf="!user.profilePictureUrl">person</mat-icon>
+                    <img *ngIf="user.profilePictureUrl" [src]="user.profilePictureUrl" alt="User avatar"/>
+                  </div>
+                  <div class="user-details">
+                    <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+                    <div class="user-role">{{ user.roleName }}</div>
+                    <div class="user-teams">{{ user.teamNames.join(', ') }}</div>
+                  </div>
+                </div>
+                <button type="button" mat-icon-button color="warn" class="remove-user-btn" (click)="removeUser(user)">
+                  <mat-icon>remove</mat-icon>
+                </button>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea
+        formControlName="description"
+        placeholder="Add additional description"
+        rows="4"
+      ></textarea>
+      <div class="error-message" *ngIf="description?.errors?.['required'] && description?.touched">
+        Description is required
+      </div>
+    </div>
+
+    <button mat-flat-button color="primary" type="submit" [disabled]="!taskForm.valid">Create Task</button>
+  </form>
+</div>

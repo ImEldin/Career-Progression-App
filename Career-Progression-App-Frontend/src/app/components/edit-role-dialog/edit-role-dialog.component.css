@@ -1,0 +1,21 @@
+.dialog-title {
+  font-size: 20px;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+}
+
+.dialog-content {
+  padding-top: 8px;
+  min-width: 280px;
+}
+
+.dialog-form-field {
+  width: 100%;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 1rem;
+}

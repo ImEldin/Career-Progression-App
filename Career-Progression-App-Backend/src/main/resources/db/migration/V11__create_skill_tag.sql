@@ -1,0 +1,10 @@
+CREATE TABLE Tag (
+  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name VARCHAR UNIQUE NOT NULL
+);
+
+CREATE TABLE SkillTag (
+  skill_id INT REFERENCES Skill(id),
+  tag_id INT REFERENCES Tag(id),
+  PRIMARY KEY (skill_id, tag_id)
+);

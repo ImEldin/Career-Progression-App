@@ -1,0 +1,5 @@
+ALTER TABLE users
+ADD COLUMN active BOOLEAN DEFAULT FALSE;
+
+ALTER TABLE PromotionRequest 
+RENAME COLUMN status_id TO status;

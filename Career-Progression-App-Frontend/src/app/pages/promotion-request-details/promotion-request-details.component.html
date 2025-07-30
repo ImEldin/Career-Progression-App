@@ -1,0 +1,314 @@
+<div class="promotion-details-container">
+  <div class="back-button-container">
+    <button mat-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Promotion Requests
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="hourglass-loading">
+    <mat-icon class="hourglass-icon">hourglass_empty</mat-icon>
+    <p>Loading promotion request details...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-container">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon class="error-icon">error</mat-icon>
+          <h3>Error Loading Details</h3>
+          <p>{{ error }}</p>
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="loadPromotionRequestDetails()"
+          >
+            <mat-icon>refresh</mat-icon>
+            Try Again
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div *ngIf="!loading && !error && promotionRequest" class="details-content">
+    <div class="header-section">
+      <mat-card class="header-card">
+        <mat-card-content>
+          <div class="header-content">
+            <div class="user-info">
+              <div class="user-avatar">
+                <img
+                  *ngIf="
+                    promotionRequest.user.profilePictureUrl;
+                    else defaultAvatar
+                  "
+                  [src]="promotionRequest.user.profilePictureUrl"
+                  alt="User avatar"
+                  class="avatar-img"
+                />
+                <ng-template #defaultAvatar>
+                  <mat-icon>person</mat-icon>
+                </ng-template>
+              </div>
+              <div class="user-details">
+                <h1>{{ getUserFullName() }}</h1>
+                <p class="user-email">{{ promotionRequest.user.email }}</p>
+                <p class="user-role">
+                  {{ promotionRequest.user.role?.name || "No role assigned" }}
+                </p>
+              </div>
+            </div>
+            <div class="request-status">
+              <mat-chip
+                [style.background-color]="
+                  getStatusColor(promotionRequest.status)
+                "
+                [style.color]="'white'"
+              >
+                {{ getStatusText(promotionRequest.status) }}
+              </mat-chip>
+              <p class="request-date">
+                Requested: {{ formatDate(promotionRequest.createdAt) }}
+              </p>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div *ngIf="promotionRequest.message" class="message-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Request Message</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="request-message">{{ promotionRequest.message }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="ai-analysis-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>psychology</mat-icon>
+            AI Report
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="hasAiReport()" class="ai-analysis-content">
+            <div
+              [innerHTML]="formatAiReport()"
+              class="formatted-analysis"
+            ></div>
+          </div>
+          <div *ngIf="!hasAiReport()" class="no-analysis">
+            <mat-icon>info</mat-icon>
+            <p>No AI report available for this promotion request.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="tasks-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>assignment</mat-icon>
+            Completed Tasks
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ promotionRequest.tasks.length }} tasks completed
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div *ngIf="promotionRequest.tasks.length > 0" class="tasks-content">
+            <div
+              *ngFor="let skillType of getTasksBySkillType() | keyvalue"
+              class="skill-type-group"
+            >
+              <h3 class="skill-type-title">{{ skillType.key }}</h3>
+              <div class="tasks-grid">
+                <mat-card
+                  *ngFor="let task of skillType.value"
+                  class="task-card"
+                >
+                  <mat-card-header>
+                    <mat-card-title>{{ task.title }}</mat-card-title>
+                    <mat-card-subtitle>{{
+                      task.templateName || "No template"
+                    }}</mat-card-subtitle>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <p class="task-description">{{ task.description }}</p>
+                    <div class="task-meta">
+                      <div class="meta-item">
+                        <mat-icon>schedule</mat-icon>
+                        <span>Started: {{ formatDate(task.createdAt) }}</span>
+                      </div>
+                      <div class="meta-item">
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Completed: {{ formatDate(task.updatedAt) }}</span>
+                      </div>
+                      <div class="meta-item">
+                        <mat-icon>timer</mat-icon>
+                        <span class="duration-badge"
+                          >Duration: {{ getTaskCompletionTime(task) }}</span
+                        >
+                      </div>
+                    </div>
+                    <mat-chip
+                      [style.background-color]="getTaskStatusColor(task.status)"
+                      [style.color]="'white'"
+                    >
+                      {{ getTaskStatusText(task.status) }}
+                    </mat-chip>
+                  </mat-card-content>
+
+                  <div class="custom-comments-panel">
+                    <button
+                      mat-stroked-button
+                      color="primary"
+                      (click)="togglePanel(task.id)"
+                    >
+                      <mat-icon>comment</mat-icon>
+                      Comments ({{ getCommentsForTask(task.id).length }})
+                      <mat-icon>{{
+                        openedPanelId === task.id
+                          ? "expand_less"
+                          : "expand_more"
+                      }}</mat-icon>
+                    </button>
+                    <div *ngIf="openedPanelId === task.id">
+                      <div
+                        *ngIf="
+                          getCommentsForTask(task.id).length > 0;
+                          else noComments
+                        "
+                      >
+                        <div class="comments-list">
+                          <div
+                            *ngFor="let comment of getCommentsForTask(task.id)"
+                            class="comment-item"
+                          >
+                            <div class="comment-header">
+                              <span class="comment-author">{{
+                                comment.authorName
+                              }}</span>
+                              <span class="comment-date">{{
+                                formatDate(comment.createdAt)
+                              }}</span>
+                            </div>
+                            <p class="comment-message">{{ comment.message }}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <ng-template #noComments>
+                        <div class="no-comments">
+                          No comments for this task.
+                        </div>
+                      </ng-template>
+                    </div>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="promotionRequest.tasks.length === 0" class="no-tasks">
+            <mat-icon>assignment_turned_in</mat-icon>
+            <p>No tasks found for this promotion request.</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div
+      *ngIf="promotionRequest.taskComments.length > 0"
+      class="comments-section"
+    >
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>forum</mat-icon>
+            All Task Comments
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ promotionRequest.taskComments.length }} comments from
+            management/admin
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="all-comments-list">
+            <div
+              *ngFor="let comment of promotionRequest.taskComments"
+              class="comment-item"
+            >
+              <div class="comment-header">
+                <span class="comment-author">{{ comment.authorName }}</span>
+                <span class="comment-date">{{
+                  formatDate(comment.createdAt)
+                }}</span>
+              </div>
+              <div class="comment-task">
+                <mat-icon>assignment</mat-icon>
+                <span>{{ comment.taskTitle }}</span>
+              </div>
+              <p class="comment-message">{{ comment.message }}</p>
+              <mat-divider></mat-divider>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div
+      *ngIf="promotionRequest.status === 'PENDING'"
+      class="promotion-actions"
+    >
+      <mat-card>
+        <mat-card-content>
+          <div class="action-section">
+            <mat-form-field appearance="outline" class="action-message-field">
+              <mat-label
+                >Message (optional for approve, required for reject)</mat-label
+              >
+              <textarea
+                matInput
+                [(ngModel)]="actionMessage"
+                rows="2"
+              ></textarea>
+            </mat-form-field>
+            <div class="action-buttons">
+              <button
+                mat-raised-button
+                color="primary"
+                (click)="approveRequest()"
+                [disabled]="actionLoading"
+              >
+                Approve
+              </button>
+              <button
+                mat-raised-button
+                color="warn"
+                (click)="rejectRequest()"
+                [disabled]="actionLoading"
+              >
+                Reject
+              </button>
+            </div>
+            <div *ngIf="actionLoading" class="action-status">
+              <mat-spinner diameter="24"></mat-spinner> Processing...
+            </div>
+            <div *ngIf="actionError" class="action-status error">
+              {{ actionError }}
+            </div>
+            <div *ngIf="actionSuccess" class="action-status success">
+              {{ actionSuccess }}
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="role-form-container">
+  <h2 class="form-title">{{ data ? "Update" : "Create New Role" }}</h2>
+  <p class="form-subtitle">
+    {{ data ? "" : "Define a new user role and its permissions" }}
+  </p>
+
+  <form class="role-form" (ngSubmit)="onSubmit()" #form="ngForm">
+    <label for="name" class="label">Role Name</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      [(ngModel)]="name"
+      placeholder="Enter role name"
+      class="input"
+      required
+    />
+
+    <h3 class="section-title">Permissions</h3>
+
+    <div class="permission-scroll-container">
+      <div *ngFor="let permission of permissionNames" class="permission-card">
+        <mat-checkbox
+          [value]="permission.name"
+          [checked]="permission.checked"
+          (change)="onPermissionToggle(permission)"
+        >
+          {{ permission.name.replaceAll("_", " ") }}
+        </mat-checkbox>
+
+        <p class="description">
+          {{ permission.description }}
+        </p>
+      </div>
+    </div>
+
+    <div class="form-buttons">
+      <button type="submit" class="btn btn-primary">
+        {{ data ? "Update" : "Create Role" }}
+      </button>
+      <button type="button" (click)="onCancel()" class="btn btn-secondary">
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

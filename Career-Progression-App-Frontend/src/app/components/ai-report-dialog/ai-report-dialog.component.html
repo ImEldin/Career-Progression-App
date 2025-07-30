@@ -1,0 +1,36 @@
+<div class="report-dialog-container">
+  <div class="report-header">
+    <h2>AI Evaluation Report</h2>
+  </div>
+
+  <div class="report-body">
+    <ng-container *ngFor="let line of data.report.split('\n')">
+      <hr *ngIf="line.trim() === '---'" />
+      <h3 *ngIf="line.startsWith('###')">
+        {{ line.replace("###", "").trim() }}
+      </h3>
+      <h4
+        *ngIf="
+          line.startsWith('**') && line.endsWith('**') && !line.includes(':')
+        "
+      >
+        {{ sanitizeBold(line) }}
+      </h4>
+      <p *ngIf="line.startsWith('- ')">{{ line }}</p>
+      <p
+        *ngIf="
+          !line.startsWith('###') &&
+          !line.startsWith('- ') &&
+          !line.startsWith('**') &&
+          line.trim() !== '---'
+        "
+      >
+        {{ line }}
+      </p>
+    </ng-container>
+  </div>
+
+  <div class="report-footer">
+    <button mat-flat-button color="primary" mat-dialog-close>Close</button>
+  </div>
+</div>
